@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
 import { login } from '../redux/auth/authActions';
 import { useNavigate } from 'react-router-dom';
+import Spinner from '../components/Spinner';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -58,28 +59,7 @@ function Login() {
             className="w-full flex justify-center items-center px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition duration-200"
             disabled={loading === 'pending'}
           >
-            {loading === 'pending' ? (
-              <svg
-                className="animate-spin h-5 w-5 mr-3 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                ></path>
-              </svg>
-            ) : 'Sign In'}
+            {loading === 'pending' ? <Spinner></Spinner> : 'Sign In'}
           </button>
           {error && <p className="text-red-500 text-center mt-4">{error}</p>}
         </form>

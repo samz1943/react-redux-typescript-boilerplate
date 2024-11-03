@@ -4,6 +4,7 @@ import { RootState, AppDispatch } from '../redux/store';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 import { fetchPostById, clearSelectedPost } from "../redux/post/postActions";
+import Spinner from "../components/Spinner";
 
 function PostDetail() {
   let { id } = useParams();
@@ -24,7 +25,7 @@ function PostDetail() {
   if (loading === 'pending') {
     return (
       <div className="flex justify-center my-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-blue-500"></div>
+        <Spinner></Spinner>
       </div>
     );
   };
