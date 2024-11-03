@@ -1,14 +1,15 @@
-import { Dispatch } from 'redux';
-import { FETCH_POSTS_REQUEST, FETCH_POSTS_SUCCESS, FETCH_POSTS_FAILURE } from './postTypes';
-import { getPosts } from '../../services/postService';
+import { createAction  } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { getPosts, getPost } from '../../services/postService';
 
-export const fetchPosts = () => async (dispatch: Dispatch) => {
-    dispatch({ type: FETCH_POSTS_REQUEST });
-    try {
-        const posts = await getPosts();
-        dispatch({ type: FETCH_POSTS_SUCCESS, payload: posts });
-    } catch (error: unknown) {
-        const { message } = error as Error;
-        dispatch({ type: FETCH_POSTS_FAILURE, payload: message });
-    }
-};
+export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
+    const response = await getPosts();
+    return response.data;
+  });
+  
+export const fetchPostById = createAsyncThunk('posts/fetchPostById', async (postId: number) => {
+    const response = await getPost(postId);
+    return response.data;
+});
+
+export const clearSelectedPost = createAction('posts/clearSelectedPost');

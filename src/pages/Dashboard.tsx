@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../redux/store';
 import { fetchPosts } from '../redux/post/postActions';
@@ -6,11 +7,16 @@ import { Container, Spinner, Alert, Row, Col, Card } from 'react-bootstrap';
 
 function Dashboard() {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { posts, loading, error } = useSelector((state: RootState) => state.post);
 
   useEffect(() => {
     dispatch(fetchPosts());
   }, [dispatch]);
+
+  const goToPost = (id: number) => {
+    navigate('/post/' + id)
+  }
 
   if (loading) return <p>Loading posts...</p>;
   if (error) return <p>Error loading posts: {error}</p>;
@@ -31,7 +37,7 @@ function Dashboard() {
         {Array.isArray(posts) && posts.length > 0 ? (
           posts.map((post) => (
             <Col key={post.id}>
-              <Card className="h-100 shadow-sm">
+              <Card className="h-100 shadow-sm" onClick={() => goToPost(post.id)}>
                 <Card.Body>
                   <Card.Title>{post.title}</Card.Title>
                   <Card.Text className="text-muted">{post.content}</Card.Text>
