@@ -6,6 +6,6 @@ export const login = async (email: string, password: string) => {
 };
 
 export const refreshToken = async (token: string) => {
-  const response = await api.post('/refresh-token', { token });
+  const response = await api.post('/refresh-token', { refreshToken: token });
   return response.data;
 };

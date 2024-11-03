@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { store } from '../redux/store';
-import { resetRetryCount, incrementRetryCount } from '../redux/post/postSlice';
-import { logout } from '../redux/auth/authActions';
+import { logout, refreshToken } from '../redux/auth/authActions';
 
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
@@ -30,24 +29,22 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     const state = store.getState();
 
-    const { retryCount } = state.post;
+    if (!originalRequest._retryCount) originalRequest._retryCount = 0;
 
-    if (error.response?.status === 401 && retryCount < 1) {
-      console.log('retry', retryCount)
-      store.dispatch(incrementRetryCount()); // Increment retry counter
+    if (error.response?.status === 401 && originalRequest._retryCount < 1) {
+      originalRequest._retryCount += 1;
       try {
-        // Attempt to refresh the access token
-        // const newAccessToken = await store.dispatch(refreshAccessToken());
+        const stateRefreshToken = state.auth.refreshToken;
 
-        // if (newAccessToken) {
-        //   store.dispatch(resetRetryCount());
-        //   // Set the new access token in the header and retry the request
-        //   originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        //   return api(originalRequest);
-        // }
+        if (stateRefreshToken) {
+          const newAccessToken = await store.dispatch(refreshToken(stateRefreshToken));
+
+          if (newAccessToken) {
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            return api(originalRequest);
+          }
+        }
       } catch (refreshError) {
-        store.dispatch(resetRetryCount());
-        // If refreshing fails, log out
         store.dispatch(logout());
       }
     }

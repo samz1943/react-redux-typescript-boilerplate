@@ -4,7 +4,6 @@ import { RootState, AppDispatch } from '../redux/store';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 import { fetchPostById, clearSelectedPost } from "../redux/post/postActions";
-import { Alert, Container } from "react-bootstrap";
 
 function PostDetail() {
   let { id } = useParams();
@@ -22,25 +21,55 @@ function PostDetail() {
     };
   }, [dispatch, id]);
 
+  if (loading === 'pending') {
+    return (
+      <div className="flex justify-center my-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-blue-500"></div>
+      </div>
+    );
+  };
+
   if (error) {
-    return <Alert variant="danger">Error loading post: {error}</Alert>;
+    return <p className="text-center text-red-500 my-4">Error loading post: {error}</p>;
   }
 
   if (!selectedPost) {
-    return <p className="text-center">Post not found.</p>;
+    return <p className="text-center text-gray-600 my-4">Post not found.</p>;
   }
 
   return (
-    <Container className="my-4">
-      <h1>{selectedPost.title}</h1>
-      <p>{selectedPost.content}</p>
-      <p className="text-muted">
-        Published by: <strong>{selectedPost.publishedBy.username}</strong>
-      </p>
-      <button className="btn btn-secondary" onClick={() => navigate(-1)}>
-        Go Back
-      </button>
-    </Container>
+    <div className="container mx-auto px-4 my-8 flex justify-center">
+      <div className="max-w-lg w-full bg-white shadow-md rounded-lg p-6">
+        <h1 className="text-2xl font-semibold mb-4">{selectedPost.title}</h1>
+        <p className="text-gray-700 mb-6">{selectedPost.content}</p>
+        <p className="text-gray-500 mb-4">
+          Published by: <span className="font-semibold">{selectedPost.publishedBy.username}</span>
+        </p>
+        
+        <div className="flex justify-between mt-6">
+          <button
+            className="bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-800 transition duration-200"
+            onClick={() => navigate(-1)}
+          >
+            Go Back
+          </button>
+          <div className="space-x-2">
+            <button
+              className="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 transition duration-200"
+              onClick={() => {}}
+            >
+              Update
+            </button>
+            <button
+              className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition duration-200"
+              onClick={() => {}}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -14,19 +14,12 @@ interface LoginResponse {
 export const login = createAsyncThunk<LoginResponse, LoginPayload>(
   'auth/login',
   async ({ email, password }) => {
-    const response = await loginApi(email, password);
-    return response;
+    return await loginApi(email, password);
   }
 );
+
+export const refreshToken = createAsyncThunk('auth/refreshToken', async(token: string) => {
+  return await refreshTokenApi(token);
+});
   
 export const logout = createAction('auth/logout');
-
-// export const refreshAccessToken = (): ThunkAction<Promise<string | undefined>, RootState, unknown, Action> => async (
-//   dispatch,
-//   getState
-// ) => {
-//   const { refreshToken } = getState().auth;
-//   const { accessToken } = await refreshTokenApi(refreshToken);
-//   dispatch({ type: REFRESH_TOKEN, payload: accessToken });
-//   return accessToken;
-// };

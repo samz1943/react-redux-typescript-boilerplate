@@ -5,9 +5,11 @@ import Footer from "./Footer";
 
 function FullLayout() {
     return (
-        <div>
+        <div className="flex flex-col min-h-screen">
             <NavBar></NavBar>
-            <Outlet/>
+            <main className="flex-grow container mx-auto px-4 my-8">
+                <Outlet/>
+            </main>
             <Footer></Footer>
         </div>
     );

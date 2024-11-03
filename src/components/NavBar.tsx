@@ -1,10 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { logout } from '../redux/auth/authActions';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import Container from 'react-bootstrap/Container';
 
 function NavBar() {
   const isAuthenticated = useSelector((state: RootState) => state.auth.accessToken);
@@ -13,27 +10,42 @@ function NavBar() {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/');
+    navigate('/login');
   };
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
-      <Container>
-        <Nav className="me-auto">
-          {isAuthenticated != null ? (
+    <nav className="bg-gray-800 p-4">
+      <div className="container mx-auto flex justify-between items-center">
+        <Link to="/" className="text-white text-xl font-semibold">
+          MyApp
+        </Link>
+        <div className="space-x-4">
+          {isAuthenticated ? (
             <>
-              <Nav.Link href="/home">Home</Nav.Link>
-              <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-              <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+              <Link
+                to="/dashboard"
+                className="text-gray-300 hover:text-white transition-colors duration-200"
+              >
+                Dashboard
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="text-gray-300 hover:text-white transition-colors duration-200"
+              >
+                Logout
+              </button>
             </>
           ) : (
-            <>
-              <Nav.Link href="/login">Login</Nav.Link>
-            </>
+            <Link
+              to="/login"
+              className="text-gray-300 hover:text-white transition-colors duration-200"
+            >
+              Login
+            </Link>
           )}
-        </Nav>
-      </Container>
-    </Navbar>
+        </div>
+      </div>
+    </nav>
   );
 }
 
