@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { store } from '../redux/store';
+import { logout, refreshAccessToken } from '../redux/auth/authActions';
 
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
@@ -25,11 +27,19 @@ api.interceptors.request.use(
 // Optional: Add response interceptors to handle errors globally
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    // Handle global errors (e.g., refresh token or redirect on 401)
-    if (error.response?.status === 401) {
-      // Example action: redirect to login
-      window.location.href = '/login';
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const newAccessToken = await store.dispatch(refreshAccessToken());
+        if (newAccessToken) {
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          return api(originalRequest);
+        }
+      } catch {
+        store.dispatch(logout());
+      }
     }
     return Promise.reject(error);
   }

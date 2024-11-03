@@ -12,14 +12,14 @@ export const login = (
     dispatch({ type: LOGIN_SUCCESS, payload: { accessToken, refreshToken } });
   };
   
-  export const logout = (): Action => ({ type: LOGOUT });
-  
-  export const refreshAccessToken = (): ThunkAction<Promise<string | undefined>, RootState, unknown, Action> => async (
-    dispatch,
-    getState
-  ) => {
-    const { refreshToken } = getState().auth;
-    const { accessToken } = await refreshTokenApi(refreshToken);
-    dispatch({ type: REFRESH_TOKEN, payload: accessToken });
-    return accessToken;
-  };
+export const logout = (): Action => ({ type: LOGOUT });
+
+export const refreshAccessToken = (): ThunkAction<Promise<string | undefined>, RootState, unknown, Action> => async (
+  dispatch,
+  getState
+) => {
+  const { refreshToken } = getState().auth;
+  const { accessToken } = await refreshTokenApi(refreshToken);
+  dispatch({ type: REFRESH_TOKEN, payload: accessToken });
+  return accessToken;
+};

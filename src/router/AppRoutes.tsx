@@ -1,5 +1,6 @@
 import { useRoutes } from 'react-router-dom';
 import Home from '../pages/Home';
+import Dashboard from '../pages/Dashboard';
 import Login from '../pages/Login';
 import About from '../pages/About';
 import Contact from '../pages/Contact';
@@ -13,6 +14,7 @@ function AppRoutes() {
             element: <FullLayout />,
             children: [
                 { path: '/home', element: <Home /> },
+                { path: '/dashboard', element: <Dashboard /> },
                 { path: '/about', element: <About /> },
                 { path: '/contact', element: <Contact /> },
                 { path: '/login', element: <Login /> },
