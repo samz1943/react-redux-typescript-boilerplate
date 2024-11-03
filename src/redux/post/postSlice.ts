@@ -6,6 +6,7 @@ interface PostState {
   selectedPost: any | null;  // For the single post data
   loading: boolean;
   error: string | null;
+  retryCount: 0,
 }
 
 const initialState: PostState = {
@@ -13,14 +14,18 @@ const initialState: PostState = {
   selectedPost: null,
   loading: false,
   error: null,
+  retryCount: 0,
 };
 
 const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
-    clearSelectedPost: (state) => {
-      state.selectedPost = null;
+    resetRetryCount: (state) => {
+        state.retryCount = 0;
+    },
+    incrementRetryCount: (state) => {
+        state.retryCount++;
     },
   },
   extraReducers: (builder) => {
@@ -57,5 +62,5 @@ const postSlice = createSlice({
   },
 });
 
-// export const { clearSelectedPost } = postSlice.actions;
+export const { resetRetryCount, incrementRetryCount } = postSlice.actions;
 export default postSlice.reducer;

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { store } from '../redux/store';
-import { logout, refreshAccessToken } from '../redux/auth/authActions';
+import { resetRetryCount, incrementRetryCount } from '../redux/post/postSlice';
+import { logout } from '../redux/auth/authActions';
 
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
@@ -10,10 +11,9 @@ const api = axios.create({
   },
 });
 
-// Optional: Add request interceptors to add authorization headers or handle other config
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token'); // Example token handling
+    const token = store.getState().auth.accessToken;
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
@@ -24,20 +24,30 @@ api.interceptors.request.use(
   }
 );
 
-// Optional: Add response interceptors to handle errors globally
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+    const state = store.getState();
+
+    const { retryCount } = state.post;
+
+    if (error.response?.status === 401 && retryCount < 1) {
+      console.log('retry', retryCount)
+      store.dispatch(incrementRetryCount()); // Increment retry counter
       try {
-        const newAccessToken = await store.dispatch(refreshAccessToken());
-        if (newAccessToken) {
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          return api(originalRequest);
-        }
-      } catch {
+        // Attempt to refresh the access token
+        // const newAccessToken = await store.dispatch(refreshAccessToken());
+
+        // if (newAccessToken) {
+        //   store.dispatch(resetRetryCount());
+        //   // Set the new access token in the header and retry the request
+        //   originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        //   return api(originalRequest);
+        // }
+      } catch (refreshError) {
+        store.dispatch(resetRetryCount());
+        // If refreshing fails, log out
         store.dispatch(logout());
       }
     }

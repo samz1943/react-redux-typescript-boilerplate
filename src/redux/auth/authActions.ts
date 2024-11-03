@@ -1,25 +1,32 @@
-import { LOGIN_SUCCESS, LOGOUT, REFRESH_TOKEN } from './authTypes';
 import { login as loginApi, refreshToken as refreshTokenApi } from '../../services/authService';
-import { ThunkAction } from 'redux-thunk';
-import { Action } from 'redux';
-import { RootState } from '../store';
+import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 
-export const login = (
-    email: string,
-    password: string
-  ): ThunkAction<Promise<void>, RootState, unknown, Action> => async (dispatch) => {
-    const { accessToken, refreshToken } = await loginApi(email, password);
-    dispatch({ type: LOGIN_SUCCESS, payload: { accessToken, refreshToken } });
-  };
+interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export const login = createAsyncThunk<LoginResponse, LoginPayload>(
+  'auth/login',
+  async ({ email, password }) => {
+    const response = await loginApi(email, password);
+    return response;
+  }
+);
   
-export const logout = (): Action => ({ type: LOGOUT });
+export const logout = createAction('auth/logout');
 
-export const refreshAccessToken = (): ThunkAction<Promise<string | undefined>, RootState, unknown, Action> => async (
-  dispatch,
-  getState
-) => {
-  const { refreshToken } = getState().auth;
-  const { accessToken } = await refreshTokenApi(refreshToken);
-  dispatch({ type: REFRESH_TOKEN, payload: accessToken });
-  return accessToken;
-};
+// export const refreshAccessToken = (): ThunkAction<Promise<string | undefined>, RootState, unknown, Action> => async (
+//   dispatch,
+//   getState
+// ) => {
+//   const { refreshToken } = getState().auth;
+//   const { accessToken } = await refreshTokenApi(refreshToken);
+//   dispatch({ type: REFRESH_TOKEN, payload: accessToken });
+//   return accessToken;
+// };

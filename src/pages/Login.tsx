@@ -13,8 +13,14 @@ function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await dispatch(login(email, password));
+    const resultAction = await dispatch(login({ email, password }));
+  
+  if (login.fulfilled.match(resultAction)) {
+    console.log('Logged in, token set:', resultAction.payload.accessToken);
     navigate('/home');
+  } else {
+    console.error('Login failed:', resultAction.payload);
+  }
   };
 
   return (
