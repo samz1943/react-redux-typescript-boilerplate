@@ -26,6 +26,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    console.log('api error')
     const originalRequest = error.config;
     const state = store.getState();
 
@@ -38,6 +39,8 @@ api.interceptors.response.use(
 
         if (stateRefreshToken) {
           const newAccessToken = await store.dispatch(refreshToken(stateRefreshToken));
+
+          console.log('newAccessToken', newAccessToken)
 
           if (newAccessToken) {
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;

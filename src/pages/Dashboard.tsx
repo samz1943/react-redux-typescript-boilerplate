@@ -11,8 +11,11 @@ function Dashboard() {
   const { posts, loading, error } = useSelector((state: RootState) => state.post);
 
   useEffect(() => {
-    dispatch(fetchPosts());
-  }, [dispatch]);
+    if (posts.length === 0) {
+      console.log('here');
+      dispatch(fetchPosts());
+    }
+  }, [dispatch, posts.length]);
 
   const goToPost = (id: number) => {
     navigate('/post/' + id)
@@ -28,7 +31,15 @@ function Dashboard() {
 
   return (
     <div className="container mx-auto my-6 px-4">
-      <h1 className="text-3xl font-semibold text-center mb-6">Dashboard</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-semibold text-center mb-6">Dashboard</h1>
+        <button
+          onClick={() =>  navigate('/post/create')}
+          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
+        >
+          Create Post
+        </button>
+      </div>
 
       {error && (
         <div className="bg-red-100 text-red-700 p-4 rounded-md text-center mb-6">

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
 import { login } from '../redux/auth/authActions';
+import { fetchSelf } from '../redux/user/userActions';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../components/Spinner';
 
@@ -17,7 +18,11 @@ function Login() {
     const resultAction = await dispatch(login({ email, password }));
   
     if (login.fulfilled.match(resultAction)) {
-      navigate('/dashboard');
+      const self = await dispatch(fetchSelf());
+
+      if (fetchSelf.fulfilled.match(self)) {
+        navigate('/dashboard');
+      }
     }
   };
 
