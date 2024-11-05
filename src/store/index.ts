@@ -1,9 +1,10 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { persistStore, persistReducer, PersistConfig } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; 
-import authSlice from './auth/authSlice';
-import userSlice from './user/userSlice'
-import postSlice from './post/postSlice';
+import authSlice from '../reduce/authSlice';
+import userSlice from '../reduce/userSlice'
+import postSlice from '../reduce/postSlice';
+import commentSlice from '../reduce/commentSlice';
 
 const rootPersistConfig: PersistConfig<any> = {
   key: 'root',
@@ -27,15 +28,22 @@ const postPersistConfig: PersistConfig<any> = {
   storage,
 };
 
+const commentPersistConfig: PersistConfig<any> = {
+  key: 'comment',
+  storage,
+};
+
 const persistedAuthReducer = persistReducer(authPersistConfig, authSlice);
 const persistedUserReducer = persistReducer(userPersistConfig, userSlice);
 const persistedPostReducer = persistReducer(postPersistConfig, postSlice);
+const persistedCommentReducer = persistReducer(commentPersistConfig, commentSlice);
 
 export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
     user: persistedUserReducer,
     post: persistedPostReducer,
+    comment: persistedCommentReducer,
   },
 });
 

@@ -1,8 +1,8 @@
-import { PaginatedResponse } from '../../interfaces/PaginatedResponse';
-import { User } from '../../interfaces/user/User';
-import { UserListRequest } from '../../interfaces/user/UserListRequest';
+import { PaginatedResponse } from '../interfaces/PaginatedResponse';
+import { User } from '../interfaces/user/User';
+import { UserListRequest } from '../interfaces/user/UserListRequest';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { deleteUser, getUserSelf, getUsers } from '../../services/userService';
+import { deleteUser, getUserSelf, getUsers } from '../services/userService';
 
 export const fetchSelf = createAsyncThunk('users/fetchSelf', async () => {
   const response = await getUserSelf();

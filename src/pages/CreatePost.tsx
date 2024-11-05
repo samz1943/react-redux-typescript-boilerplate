@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector  } from 'react-redux';
-import { RootState, AppDispatch } from '../redux/store';
+import { RootState, AppDispatch } from '../store';
 import { useNavigate } from 'react-router-dom';
-import { addPost } from "../redux/post/postActions";
+import { addPost } from "../actions/postActions";
 import Spinner from '../components/Spinner';
 
 function CreatePost() {

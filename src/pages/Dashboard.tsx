@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../redux/store';
-import { fetchPosts } from '../redux/post/postActions';
+import { AppDispatch, RootState } from '../store';
+import { fetchPosts } from '../actions/postActions';
 import Spinner from '../components/Spinner';
 
 function Dashboard() {

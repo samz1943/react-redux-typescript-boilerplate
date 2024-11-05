@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector  } from 'react-redux';
-import { RootState, AppDispatch } from '../redux/store';
+import { RootState, AppDispatch } from '../store';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchPostById, clearSelectedPost, updatePostById } from "../redux/post/postActions";
+import { fetchPostById, clearSelectedPost, updatePostById } from "../actions/postActions";
 import Spinner from '../components/Spinner';
 
 function EditPost() {

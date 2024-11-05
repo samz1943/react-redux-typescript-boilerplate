@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { login, refreshToken, logout } from "./authActions";
+import { login, refreshToken, logout } from "../actions/authActions";
 
 interface AuthState {
   accessToken: string | null;

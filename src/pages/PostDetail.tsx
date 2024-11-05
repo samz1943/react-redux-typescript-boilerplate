@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector  } from 'react-redux';
-import { RootState, AppDispatch } from '../redux/store';
+import { RootState, AppDispatch } from '../store';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchPostById, deletePostById, clearSelectedPost } from "../redux/post/postActions";
+import { fetchPostById, deletePostById, clearSelectedPost } from "../actions/postActions";
+import PostComment from "../components/PostComment";
 import Spinner from "../components/Spinner";
 
 function PostDetail() {
@@ -84,6 +85,8 @@ function PostDetail() {
             </div>
           }
         </div>
+
+        <PostComment postId={selectedPost.id} userId={userId} />
       </div>
 
       {/* Delete Confirmation Modal */}

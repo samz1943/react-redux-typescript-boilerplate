@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../redux/store';
-import { fetchUsers, removeUser } from '../redux/user/userActions';
+import { AppDispatch, RootState } from '../store';
+import { fetchUsers, removeUser } from '../actions/userActions';
 
 const UserList = () => {
   const dispatch = useDispatch<AppDispatch>();

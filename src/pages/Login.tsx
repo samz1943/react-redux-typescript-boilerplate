@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../redux/store';
-import { login } from '../redux/auth/authActions';
-import { fetchSelf } from '../redux/user/userActions';
+import { AppDispatch, RootState } from '../store';
+import { login } from '../actions/authActions';
+import { fetchSelf } from '../actions/userActions';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../components/Spinner';
 

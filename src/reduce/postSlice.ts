@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchPosts, fetchPostById, addPost, updatePostById, deletePostById, clearSelectedPost } from './postActions';
+import { fetchPosts, fetchPostById, addPost, updatePostById, deletePostById, clearSelectedPost } from '../actions/postActions';
 
 interface PostState {
   posts: any[];

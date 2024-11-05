@@ -1,9 +1,5 @@
+import { PostRequest } from "../interfaces/post/PostRequest";
 import api from "./api";
-
-interface PostData {
-    title: string;
-    content: string;
-}
 
 export const getPosts = async () => {
     const response = await api.get('/post');
@@ -15,12 +11,12 @@ export const getPost = async (id: number) => {
     return response.data;
 }
 
-export const createPost = async ( data: PostData) => {
+export const createPost = async ( data: PostRequest) => {
     const response = await api.post('/post', data);
     return response.data;
 }
 
-export const updatePost = async (id: number, data: PostData) => {
+export const updatePost = async (id: number, data: PostRequest) => {
     const response = await api.put('/post/' + id, data);
     return response.data;
 }

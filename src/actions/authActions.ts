@@ -1,6 +1,6 @@
-import { LoginRequest } from '../../interfaces/auth/LoginRequest';
-import { LoginResponse } from '../../interfaces/auth/LoginResponse';
-import { login as loginApi, refreshToken as refreshTokenApi } from '../../services/authService';
+import { LoginRequest } from '../interfaces/auth/LoginRequest';
+import { LoginResponse } from '../interfaces/auth/LoginResponse';
+import { login as loginApi, refreshToken as refreshTokenApi } from '../services/authService';
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const login = createAsyncThunk<LoginResponse, LoginRequest>(

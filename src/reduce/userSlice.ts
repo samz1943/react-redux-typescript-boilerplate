@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction  } from '@reduxjs/toolkit';
-import { fetchSelf, fetchUsers, removeUser } from './userActions';
-import { User } from '../../interfaces/user/User';
-import { PaginatedResponse } from '../../interfaces/PaginatedResponse';
+import { fetchSelf, fetchUsers, removeUser } from '../actions/userActions';
+import { User } from '../interfaces/user/User';
+import { PaginatedResponse } from '../interfaces/PaginatedResponse';
 
 interface UserState {
   users: User[];

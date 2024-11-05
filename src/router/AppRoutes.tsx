@@ -1,6 +1,6 @@
 import { useRoutes, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
+import { RootState } from '../store';
 import Dashboard from '../pages/Dashboard';
 import PostDetail from '../pages/PostDetail';
 import CreatePost from '../pages/CreatePost';
