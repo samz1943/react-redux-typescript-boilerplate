@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
-import { fetchUsers } from '../redux/user/userActions';
+import { fetchUsers, removeUser } from '../redux/user/userActions';
 
 const UserList = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { users, totalPages, currentPage, loading } = useSelector((state: RootState) => state.user);
+  const { self, users, totalPages, loading } = useSelector((state: RootState) => state.user);
 
   const [usernameFilter, setUsernameFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   useEffect(() => {
     dispatch(fetchUsers({ page, limit: 5, username: usernameFilter }));
@@ -20,7 +22,26 @@ const UserList = () => {
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsernameFilter(event.target.value);
-    setPage(1); // Reset to first page on new filter
+    setPage(1);
+  };
+
+  const handleDeleteClick = (userId: number) => {
+    setSelectedUserId(userId);
+    setShowModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (selectedUserId !== null) {
+      dispatch(removeUser(selectedUserId)).then(() => {
+        dispatch(fetchUsers({ page, limit: 5, username: usernameFilter }));
+      });
+      setShowModal(false);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowModal(false);
+    setSelectedUserId(null);
   };
 
   return (
@@ -47,10 +68,20 @@ const UserList = () => {
         ) : (
           <ul className="space-y-4">
             {users.map((user) => (
-              <li key={user.id} className="border-b pb-4">
+              <li key={user.id} className="border-b pb-4 flex justify-between items-center">
+              <div>
                 <p className="text-lg font-semibold">{user.username}</p>
                 <p className="text-gray-500">{user.email}</p>
-              </li>
+              </div>
+              {user.id !== self.id && (
+                <button
+                  onClick={() => handleDeleteClick(user.id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              )}
+            </li>
             ))}
           </ul>
         )}
@@ -78,6 +109,30 @@ const UserList = () => {
           Next
         </button>
       </div>
+
+      {/* Confirmation Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-1/3">
+            <h2 className="text-xl font-semibold mb-4 text-center">Confirm Deletion</h2>
+            <p className="text-center mb-6">Are you sure you want to delete this user?</p>
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={confirmDelete}
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={cancelDelete}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

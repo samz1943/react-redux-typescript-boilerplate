@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction  } from '@reduxjs/toolkit';
-import { fetchSelf, fetchUsers } from './userActions';
+import { fetchSelf, fetchUsers, removeUser } from './userActions';
 import { User } from '../../interfaces/user/User';
 import { PaginatedResponse } from '../../interfaces/PaginatedResponse';
 
@@ -54,6 +54,19 @@ const userSlice = createSlice({
       state.currentPage = action.payload.currentPage;
     })
     .addCase(fetchUsers.rejected, (state, action) => {
+      state.loading = 'failed';
+      state.error = action.payload as string;
+    })
+    
+    .addCase(removeUser.pending, (state) => {
+      state.loading = 'pending';
+      state.error = null;
+    })
+    .addCase(removeUser.fulfilled, (state, action) => {
+      state.loading = 'succeeded';
+      state.users.splice(state.users.findIndex((user) => user.id === action.payload), 1);
+    })
+    .addCase(removeUser.rejected, (state, action) => {
       state.loading = 'failed';
       state.error = action.payload as string;
     });

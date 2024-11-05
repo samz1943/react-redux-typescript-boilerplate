@@ -13,12 +13,17 @@ export const getUsers = async (param: UserListRequest): Promise<PaginatedRespons
   return response.data;
 }
 
-export const getUser = async (userId: string) => {
+export const getUser = async (userId: number) => {
   const response = await api.get(`/user/${userId}`);
   return response.data;
 };
 
-export const updateUser = async (userId: string, userData: any) => {
+export const updateUser = async (userId: number, userData: any) => {
   const response = await api.put(`/user/${userId}`, userData);
+  return response.data;
+};
+
+export const deleteUser = async (userId: number) => {
+  const response = await api.delete(`/user/${userId}`);
   return response.data;
 };
