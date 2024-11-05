@@ -1,11 +1,13 @@
+import { LoginRequest } from '../interfaces/auth/LoginRequest';
+import { LoginResponse } from '../interfaces/auth/LoginResponse';
 import api from './api';
 
-export const login = async (email: string, password: string) => {
-  const response = await api.post('/login', { email, password });
+export const login = async (payload: LoginRequest): Promise<LoginResponse> => {
+  const response = await api.post('/login', payload);
   return response.data;
 };
 
-export const refreshToken = async (token: string) => {
+export const refreshToken = async (token: string): Promise<LoginResponse> => {
   const response = await api.post('/refresh-token', { refreshToken: token });
   return response.data;
 };

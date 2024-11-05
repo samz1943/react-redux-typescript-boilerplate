@@ -1,11 +1,7 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { getPosts, getPost, createPost, updatePost, deletePost } from '../../services/postService';
 import { RootState } from '../store';
-
-interface PostData {
-  title: string;
-  content: string;
-}
+import { PostRequest } from '../../interfaces/post/PostRequest';
 
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
   const response = await getPosts();
@@ -30,7 +26,7 @@ export const fetchPostById = createAsyncThunk(
 
 export const addPost = createAsyncThunk(
   'posts/addPost',
-  async (data: PostData, thunkAPI) => {
+  async (data: PostRequest, thunkAPI) => {
     try {
       const response = await createPost(data);
       return response.data;
@@ -42,7 +38,7 @@ export const addPost = createAsyncThunk(
 
 export const updatePostById = createAsyncThunk(
   'posts/updatePostById',
-  async ({ id, data }: { id: number; data: PostData }, thunkAPI) => {
+  async ({ id, data }: { id: number; data: PostRequest }, thunkAPI) => {
     try {
       const response = await updatePost(id, data);
       return response.data;

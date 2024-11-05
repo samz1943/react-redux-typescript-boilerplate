@@ -1,7 +1,23 @@
+import { PaginatedResponse } from '../../interfaces/PaginatedResponse';
+import { User } from '../../interfaces/user/User';
+import { UserListRequest } from '../../interfaces/user/UserListRequest';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getUserSelf } from '../../services/userService';
+import { getUserSelf, getUsers } from '../../services/userService';
 
 export const fetchSelf = createAsyncThunk('users/fetchSelf', async () => {
   const response = await getUserSelf();
   return response.data;
 });
+
+export const fetchUsers = createAsyncThunk<PaginatedResponse<User>, UserListRequest>(
+  'users/fetchUsers',
+  async (userListRequest: UserListRequest, { rejectWithValue }) => {
+    try {
+      const response = await getUsers(userListRequest);
+
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch users');
+    }
+  }
+);

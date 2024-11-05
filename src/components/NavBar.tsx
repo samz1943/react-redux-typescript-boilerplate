@@ -33,6 +33,12 @@ function NavBar() {
           >
             Dashboard
           </Link>
+          <Link
+            to="/user"
+            className="text-gray-300 hover:text-white text-lg font-semibold transition-colors duration-200"
+          >
+            User
+          </Link>
         </div>
 
         {/* Right Side - Username Dropdown with Avatar */}
