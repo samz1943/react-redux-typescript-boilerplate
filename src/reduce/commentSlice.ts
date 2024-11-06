@@ -61,7 +61,7 @@ const commentSlice = createSlice({
       })
       .addCase(updateCommentById.fulfilled, (state, action) => {
         state.loading = 'succeeded';
-        state.comments[state.comments.findIndex((comment) => comment.id === action.payload)] = action.payload;
+        state.comments[state.comments.findIndex((comment) => comment.id === action.payload.id)] = action.payload;
       })
       .addCase(updateCommentById.rejected, (state, action) => {
         state.loading = 'failed';

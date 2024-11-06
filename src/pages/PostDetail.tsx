@@ -3,6 +3,7 @@ import { useDispatch, useSelector  } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchPostById, deletePostById, clearSelectedPost } from "../actions/postActions";
+import { addComment } from "../actions/commentActions";
 import PostComment from "../components/PostComment";
 import Spinner from "../components/Spinner";
 
@@ -15,6 +16,15 @@ function PostDetail() {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [comment, setComment] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (id && comment.trim()) {
+      await dispatch(addComment({ postId: parseInt(id), data: { content: comment } }));
+      setComment('');
+    }
+  };
   
   useEffect(() => {
     if (id) {
@@ -53,40 +63,70 @@ function PostDetail() {
   }
 
   return (
-    <div className="container mx-auto px-4 my-8 flex justify-center">
-      <div className="max-w-lg w-full bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-2xl font-semibold mb-4">{selectedPost.title}</h1>
-        <p className="text-gray-700 mb-6">{selectedPost.content}</p>
-        <p className="text-gray-500 mb-4">
-          Published by: <span className="font-semibold">{selectedPost.publishedBy.username}</span>
-        </p>
+    <div>
+      {/* Content Area */}
+      <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
         
-        <div className="flex justify-between mt-6">
-          <button
-            className="bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-800 transition duration-200"
-            onClick={() => navigate(-1)}
-          >
-            Go Back
-          </button>
-          {userId === selectedPost.publishedBy.id &&
-            <div className="space-x-2">
-              <button
-                className="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 transition duration-200"
-                onClick={() => navigate('/post/' + id + '/edit')}
-              >
-                Update
-              </button>
-              <button
-                className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition duration-200"
-                onClick={() => setShowDeleteModal(true)}
-              >
-                Delete
-              </button>
-            </div>
-          }
+        {/* Post Detail Section */}
+        <div className="w-full lg:w-1/2 flex flex-col items-center p-6">
+          {/* Action Buttons */}
+          <div className="flex justify-between w-full max-w-lg mb-4">
+            <button
+              className="bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-800 transition duration-200"
+              onClick={() => navigate(-1)}
+            >
+              Go Back
+            </button>
+            {userId === selectedPost.publishedBy.id && (
+              <div className="space-x-2">
+                <button
+                  className="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 transition duration-200"
+                  onClick={() => navigate('/post/' + id + '/edit')}
+                >
+                  Update
+                </button>
+                <button
+                  className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition duration-200"
+                  onClick={() => setShowDeleteModal(true)}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Post Content */}
+          <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-lg min-h-[200px]">
+            <h1 className="text-2xl font-semibold mb-4">{selectedPost.title}</h1>
+            <p className="text-gray-700 mb-4">{selectedPost.content}</p>
+            <p className="text-gray-500">
+              Published by: <span className="font-semibold">{selectedPost.publishedBy.username}</span>
+            </p>
+          </div>
         </div>
 
-        <PostComment postId={selectedPost.id} userId={userId} />
+        {/* Comments Section */}
+        <div className="w-full lg:w-1/2 flex-1 lg:min-h-[calc(100vh-300px)] overflow-y-auto p-6">
+          {/* Comments List */}
+          <PostComment postId={selectedPost.id} userId={userId} />
+
+          {/* Comment Box */}
+          <form onSubmit={handleSubmit} className="mt-4 w-full max-w-lg">
+            <input
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Add a comment..."
+              className="w-full p-3 border rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="submit"
+              disabled={!comment.trim()}
+              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200 disabled:bg-blue-300"
+            >
+              Post Comment
+            </button>
+          </form>
+        </div>
       </div>
 
       {/* Delete Confirmation Modal */}

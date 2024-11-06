@@ -8,7 +8,6 @@ export const fetchComments = createAsyncThunk<PaginatedResponse<Comment>,{ postI
   'comments/fetchComments',
   async ({ postId, commentListRequest }) => {
       const response = await getComments(postId, commentListRequest);
-      console.log('fetch comments', response);
       return response;
   }
 );
