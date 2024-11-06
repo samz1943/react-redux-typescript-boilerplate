@@ -1,25 +1,43 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { fetchPosts } from '../actions/postActions';
+import { debounce } from 'lodash';
 import Spinner from '../components/Spinner';
 
 function Dashboard() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { posts, loading, error } = useSelector((state: RootState) => state.post);
+  const { posts, loading, error, totalPages } = useSelector((state: RootState) => state.post);
+
+  const [titleFilter, setTitleFilter] = useState('');
+  const [page, setPage] = useState(1);
+
+  const fetchDebouncedPosts = useCallback(
+    debounce((title) => {
+      dispatch(fetchPosts({ page, limit: 6, title }));
+    }, 500),
+    [dispatch, page]
+  );
 
   useEffect(() => {
-    if (posts.length === 0) {
-      console.log('here');
-      dispatch(fetchPosts());
-    }
-  }, [dispatch, posts.length]);
+    fetchDebouncedPosts(titleFilter);
+    return fetchDebouncedPosts.cancel;
+  }, [titleFilter, page, fetchDebouncedPosts]);
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitleFilter(e.target.value);
+    setPage(1);
+  };
 
   const goToPost = (id: number) => {
     navigate('/post/' + id)
   }
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
   if (loading === 'pending') {
     return (
@@ -34,7 +52,7 @@ function Dashboard() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-semibold text-center mb-6">Dashboard</h1>
         <button
-          onClick={() =>  navigate('/post/create')}
+          onClick={() => navigate('/post/create')}
           className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
         >
           Create Post
@@ -47,7 +65,19 @@ function Dashboard() {
         </div>
       )}
 
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Title Filter Input */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Filter by title"
+          value={titleFilter}
+          onChange={handleFilterChange}
+          className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+        />
+      </div>
+
+      {/* Posts in Single Column */}
+      <div className="grid gap-6 grid-cols-2">
         {Array.isArray(posts) && posts.length > 0 ? (
           posts.map((post) => (
             <div
@@ -81,6 +111,19 @@ function Dashboard() {
             </p>
           )
         )}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center mt-6">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index + 1}
+            onClick={() => handlePageChange(index + 1)}
+            className={`px-4 py-2 mx-1 rounded ${page === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+          >
+            {index + 1}
+          </button>
+        ))}
       </div>
     </div>
   );

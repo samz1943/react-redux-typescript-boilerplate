@@ -12,7 +12,7 @@ interface PostCommentProps {
 
 const PostComment: React.FC<PostCommentProps> = ({ postId, userId }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { comments, loading, currentPage, totalPages } = useSelector((state: RootState) => state.comment);
+  const { comments, currentPage, totalPages } = useSelector((state: RootState) => state.comment);
   
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);

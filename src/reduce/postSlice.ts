@@ -6,6 +6,9 @@ interface PostState {
   selectedPost: any | null;
   loading: 'idle' | 'pending' | 'succeeded' | 'failed';
   error: string | null;
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
 }
 
 const initialState: PostState = {
@@ -13,6 +16,9 @@ const initialState: PostState = {
   selectedPost: null,
   loading: 'idle',
   error: null,
+  totalItems: 0,
+  totalPages: 0,
+  currentPage: 1,
 };
 
 const postSlice = createSlice({
@@ -27,7 +33,10 @@ const postSlice = createSlice({
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.loading = 'succeeded';
-        state.posts = action.payload;
+        state.posts = action.payload.data;
+        state.totalItems = action.payload.totalItems;
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.currentPage;
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.loading = 'failed';

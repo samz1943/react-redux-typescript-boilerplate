@@ -2,12 +2,22 @@ import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { getPosts, getPost, createPost, updatePost, deletePost } from '../services/postService';
 import { RootState } from '../store';
 import { PostRequest } from '../interfaces/post/PostRequest';
+import { PaginatedResponse } from '../interfaces/PaginatedResponse';
+import { Post } from '../interfaces/post/Post';
+import { PostListRequest } from '../interfaces/post/PostListRequest';
 
-export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
-  const response = await getPosts();
-  console.log('fetch posts', response.data)
-  return response.data;
-});
+export const fetchPosts = createAsyncThunk<PaginatedResponse<Post>, PostListRequest>(
+  'posts/fetchPosts',
+  async (postListRequest: PostListRequest, { rejectWithValue }) => {
+    try {
+      const response = await getPosts(postListRequest);
+      console.log('fetch posts', response.data)
+      return response;
+    }  catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch users');
+    }
+  }
+);
 
 export const fetchPostById = createAsyncThunk(
   'posts/fetchOrGetPostById',
